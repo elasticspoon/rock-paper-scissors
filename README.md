@@ -1,1 +1,1 @@
-Basic Rock, Paper, Scissors game played with the javascript console in a browser. 
+More complex Rock, Paper, Scissors game. Includes a visual UI for user. 
