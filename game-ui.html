@@ -7,27 +7,85 @@
 </head>
 <body>
     <div class=game-container>
+        <div class="display-container">
+            <p class="game-text">Select Rock, Paper or Scissors to start playing!</p>
+            <div class="button-container">
+                <button class="btn game-btn" id="rock">ROCK</button>
+                <button class="btn game-btn" id="paper">PAPER</button>
+                <button class="btn game-btn" id="scissors">SCISSORS</button>
+                <button class="btn hidden" id="play-again">PLAY AGAIN?</button>
+            </div>
+        </div>
         <div class="score-container">
             <div class="player label">Player</div>
             <div class="player score">0</div>
             <div class="computer label">Computer</div>
             <div class="computer score">0</div>
         </div>
-        <div class="button-container">
-            <button class="btn" id="rock">ROCK</button>
-            <button class="btn" id="paper">PAPER</button>
-            <button class="btn" id="scissors">SCISSORS</button>
-        </div>
     </div>
   <script>
     // Your JavaScript goes here!
-    function getGesture (num) {
-        switch (num) {
-            case 1:
+    const playerScore = document.querySelector('.player.score');
+    const computerScore = document.querySelector('.computer.score');
+    const playerInputButtons = document.querySelectorAll('.game-btn');
+    const gameText = document.querySelector('.game-text');
+    const displayContainer = document.querySelector('.display-container');
+    const resetButton = document.querySelector('.btn#play-again');
+    
+    let playerPoints = 0;
+    let computerPoints = 0;
+
+    playerInputButtons.forEach(button => button.addEventListener('click', getPlayerGesture));
+    resetButton.addEventListener('click', resetGame);
+
+    function resetGame() {
+        playerPoints = 0;
+        computerPoints = 0;
+        updateScores(0, 0);
+        gameText.textContent = "Select Rock, Paper or Scissors to start playing!";
+        resetButton.classList.add('hidden');
+        playerInputButtons.forEach(button => button.classList.remove('hidden'));
+    }
+    function playARound(resultText) {
+        gameText.textContent = resultText;
+        if (resultText.search("win") != -1) {
+                playerPoints++;
+            }
+        else if (resultText.search("lose") != -1) {
+                computerPoints++;
+        }
+        updateScores(playerPoints, computerPoints);
+        if (playerPoints == 5 || computerPoints == 5) {
+            displayWinner();
+        }
+    }
+    function updateScores(p, c) {
+        playerScore.textContent = p;
+        computerScore.textContent = c;
+    }
+    function displayWinner() {
+        if (playerPoints > computerPoints) {
+            gameText.textContent = `You win! Beat the computer ${playerPoints} to ${computerPoints}.`;
+        }
+        else {
+            gameText.textContent = `You lost! Lost to the computer ${playerPoints} to ${computerPoints}.`;
+        }
+        playerInputButtons.forEach(button => button.classList.add('hidden'));
+        resetButton.classList.remove('hidden');
+    }
+    function getPlayerGesture(e) {
+        let playerSelection = e.target.innerText;
+        let computerSelection = computerPlay();
+        let resultText = getWinner(playerSelection.toLowerCase(), computerSelection.toLocaleLowerCase());
+        playARound(resultText);
+    }
+    function computerPlay() {
+        switch (Math.floor(Math.random() * 3)) {
+            case 0:
                 return "Rock";
-            case 2:
+            case 1:
                 return "Paper";
-            case 3: 
+            case 2: 
                 return "Scissors";
         }
     }
@@ -44,15 +102,7 @@
                 c === "rock" ? "You lose! Rock beats Scissors" : "You win. Scissors beat Paper.";
         }
     }
-    function playARound (playerSelection, computerSelection)
-    {
-        return getWinner(playerSelection.toLowerCase(), computerSelection.toLowerCase());
-    }
-    function playARoundActual ()
-    {
-        return playARound(prompt("Rock, Paper or Scissors?"), computerPlay());
-    }
-    function game() {
+    /* function game() {
         let compPoints = 0;
         let playerPoints = 0;
         const ROUNDS = 5;
@@ -76,10 +126,8 @@
             console.log(`It is a tie! ${playerPoints} to ${compPoints}!`);
         }
 
-    }
-    function computerPlay() {
-        return getGesture(Math.floor(Math.random() * 3)+1);
-    }
+    } */
+    
   </script>
 </body>
 </html>
